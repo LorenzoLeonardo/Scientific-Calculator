@@ -30,12 +30,15 @@ class CItems
 	_tstring m_soperation;
 	PRIORITY m_priority;
 	bool     m_isOperator;
+	bool     m_bIsDigit;
+	bool     m_bIsOpenBrace;
+	bool     m_bIsCloseBrace;
 
 public:
 	CItems();
 	CItems(long double, _tstring oper, PRIORITY prio);
 	~CItems();
-
+	bool IsBrace(_tstring s);
 	void SetPriority(PRIORITY prio)
 	{
 		m_priority = prio;
@@ -44,9 +47,21 @@ public:
 	{
 		return m_priority;
 	}
+	bool IsOpenBrace()
+	{
+		return m_bIsOpenBrace;
+	}
+	bool IsCloseBrace()
+	{
+		return m_bIsCloseBrace;
+	}
 	bool IsAnOperator()
 	{
 		return m_isOperator;
+	}
+	bool IsADigit()
+	{
+		return m_bIsDigit;
 	}
 	bool IsOperator(_tstring s);
 
@@ -64,7 +79,11 @@ public:
 	{
 		this->m_number = this->m_number + b.m_number;
 		this->m_soperation = b.m_soperation;
-		this->m_priority = PRIORITY::ZERO;
+		this->m_priority = b.m_priority;
+		this->m_isOperator = b.m_isOperator;
+		this->m_bIsDigit = b.m_bIsDigit;
+		this->m_bIsOpenBrace = b.m_bIsOpenBrace;
+		this->m_bIsCloseBrace = b.m_bIsCloseBrace;
 		return *this;
 	}
 
@@ -122,6 +141,7 @@ private:
 	void RemoveSpaces();
 	bool IsBalanced(_tstring s);
 	bool IsOperator(TCHAR s);
+	
 	void ConvertInfixToPostFix();
 public:
 	CCalculator();

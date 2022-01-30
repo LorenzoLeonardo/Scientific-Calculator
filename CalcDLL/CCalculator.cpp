@@ -7,6 +7,7 @@ CItems::CItems()
 	m_soperation = _T("");
 	m_priority = PRIORITY::ZERO;
 	m_isOperator = false;
+	m_bIsDigit = false;
 
 }
 
@@ -16,6 +17,17 @@ CItems::CItems(long double num, _tstring oper, PRIORITY prio)
 	m_soperation = oper;
 	m_priority = prio;
 	m_isOperator = IsOperator(oper);
+	m_bIsOpenBrace = false;
+	m_bIsCloseBrace = false;
+	m_bIsDigit = false;
+
+	if(oper.compare(_T("(")) == 0)
+		m_bIsOpenBrace = true;
+	else if (oper.compare(_T(")")) == 0)
+		m_bIsCloseBrace = true;
+	
+	if (!m_isOperator && !m_bIsOpenBrace && !m_bIsCloseBrace)
+		m_bIsDigit = true;
 }
 CItems::~CItems()
 {
@@ -31,7 +43,14 @@ bool CItems::IsOperator(_tstring s)
 	else
 				return false;
 }
-
+bool CItems::IsBrace(_tstring s)
+{
+	if (s.compare(_T("(")) == 0 ||
+		s.compare(_T(")")) == 0)
+		return true;
+	else
+		return false;
+}
 CCalculator::CCalculator()
 {
 	m_input = _T("");
@@ -128,6 +147,7 @@ bool CCalculator::IsOperator(TCHAR s)
 		return false;
 }
 
+
 void CCalculator::ParseInput()
 {
 	RemoveSpaces();
@@ -218,9 +238,38 @@ void CCalculator::ConvertInfixToPostFix()
 
 	for (size_t i = 0; i < nSize; i++)
 	{
-		if (m_itemsArray[i].GetOperation().compare(_T("(")) == 0)
+		if (m_itemsArray[i].IsOpenBrace())
 		{
 			m_stack.push(m_itemsArray[i]);
 		}
+		else if (m_itemsArray[i].IsCloseBrace())
+		{
+			CItems item;
+			while (!m_stack.empty() && !m_stack.top().IsOpenBrace())
+			{
+				item = m_stack.top();
+				m_postfix.push_back(item);
+				m_stack.pop();
+			}
+			if(!m_stack.empty())
+				m_stack.pop();
+		}
+		else if (m_itemsArray[i].IsADigit())
+		{
+			m_postfix.push_back(m_itemsArray[i]);
+		}
+		else if (m_itemsArray[i].IsAnOperator())
+		{
+			CItems item;
+			while (m_stack.top().IsAnOperator() && (m_stack.top().GetPriority() <= m_itemsArray[i].GetPriority()))
+			{
+				m_postfix.push_back(m_stack.top());
+				m_stack.pop();
+				//m_stack.push(m_itemsArray[i]);
+			}
+			m_stack.push(m_itemsArray[i]);
+		}
 	}
+
+
 }
