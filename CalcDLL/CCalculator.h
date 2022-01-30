@@ -143,10 +143,12 @@ private:
 	_tstring m_input;
 	bool m_bCorrectSyntax;
 	void ParseInput();
-	void RemoveSpaces();
+	inline _tstring RemoveSpaces(_tstring sMain);
+	inline _tstring InsertWithin(_tstring sMain, _tstring substring, _tstring c);
+	inline _tstring InsertBothEnd(_tstring sMain, _tstring c, _tstring d);
 	bool IsBalanced(_tstring s);
 	bool IsOperator(TCHAR s);
-	
+	bool IsAlphaNumBrace(_tstring s);
 	void ConvertInfixToPostFix();
 public:
 	CCalculator();
@@ -155,6 +157,10 @@ public:
 	long double Compute();
 	void SetInput(CONST TCHAR* input)
 	{
+		while (!m_stack.empty())
+			m_stack.pop();
+		m_postfix.clear();
+		m_infix.clear();
 		m_input = input;
 		ParseInput();
 	}

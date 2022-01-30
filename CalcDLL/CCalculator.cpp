@@ -108,9 +108,16 @@ long double CCalculator::Compute()
 	return m_postfix[0].GetNumber();
 }
 
-void CCalculator::RemoveSpaces()
+inline _tstring CCalculator::RemoveSpaces(_tstring sMain)
 {
-	m_input.erase(std::remove(m_input.begin(), m_input.end(), _T(' ')), m_input.end());
+	sMain.erase(std::remove(sMain.begin(), sMain.end(), _T(' ')), sMain.end());
+	return sMain;
+}
+inline _tstring CCalculator::InsertWithin(_tstring sMain, _tstring substring, _tstring c)
+{
+	while (sMain.find(substring) != _tstring::npos)
+		sMain.insert(sMain.find(substring) + 1, c);
+	return sMain;
 }
 bool CCalculator::IsBalanced(_tstring s)
 {
@@ -180,96 +187,102 @@ bool CCalculator::IsOperator(TCHAR s)
 		return false;
 }
 
-
+inline _tstring CCalculator::InsertBothEnd(_tstring sMain, _tstring cBegin, _tstring cEnd)
+{
+	return cBegin + sMain + cEnd;
+}
 void CCalculator::ParseInput()
 {
-	RemoveSpaces();
+	m_bCorrectSyntax = false;
 
-	
-	while(m_input.find(_T(")(")) != _tstring::npos)
-		m_input.insert(m_input.find(_T(")("))+1, _T("*"));
+	if (m_input.empty())
+		return;
 
-	m_input = _T("(") + m_input + _T(")");
-
+	m_input= RemoveSpaces(m_input);
+	m_input = InsertWithin(m_input,_T(")("), _T("*"));
+	m_input = InsertBothEnd(m_input, _T("("), _T(")"));
 	m_bCorrectSyntax = IsBalanced(m_input);
 	if (!m_bCorrectSyntax)
 		return;
+	m_bCorrectSyntax = IsAlphaNumBrace(m_input);
+	if (!m_bCorrectSyntax)
+		return;
 
-	if (!m_input.empty())
+	size_t nLen = m_input.size();
+	for (size_t i = 0; i < nLen && m_bCorrectSyntax; i++)
 	{
-		size_t nLen = m_input.size();
-		for (size_t i = 0; i < nLen && m_bCorrectSyntax; i++)
+		if (m_input[i] == _T('('))
 		{
-			if (m_input[i] == _T('('))
-			{
-				CItems item(0, _T("("), PRIORITY::ONE);
+			CItems item(0, _T("("), PRIORITY::ONE);
 
-				m_infix.push_back(item);
-			}
-			else if (m_input[i] == _T(')'))
-			{
-				CItems item(0, _T(")"), PRIORITY::ONE);
+			m_infix.push_back(item);
+		}
+		else if (m_input[i] == _T(')'))
+		{
+			CItems item(0, _T(")"), PRIORITY::ONE);
 
-				m_infix.push_back(item);
-			}
-			else if (_istxdigit(m_input[i]))
+			m_infix.push_back(item);
+		}
+		else if (_istxdigit(m_input[i]))
+		{
+			int nDotCounter = 0;
+			_tstring sTemp = _T("");
+			while (_istxdigit(m_input[i]) || (m_input[i] == _T('.')))
 			{
-				int nDotCounter = 0;
-				_tstring sTemp = _T("");
-				while (_istxdigit(m_input[i]) || (m_input[i] == _T('.')))
+				if (m_input[i] == _T('.'))
 				{
-					if (m_input[i] == _T('.'))
-					{
-						nDotCounter++;
-					}
-					if (nDotCounter > 1)
-					{
-						m_bCorrectSyntax = false;
-						break;
-					}
+					nDotCounter++;
+				}
+				if (nDotCounter > 1)
+				{
+					m_bCorrectSyntax = false;
+					break;
+				}
+				else
+				{
 					sTemp += m_input[i];
 					i++;
 				}
-				if (m_bCorrectSyntax)
-				{
-					i--;
-					long double ldNum = stold(sTemp);
-					CItems item(ldNum, _T(""), PRIORITY::ONE);
-
-					m_infix.push_back(item);
-				}
 			}
-			else if (IsOperator(m_input[i]))
+			if (sTemp[sTemp.length() - 1] == _T('.'))
+				m_bCorrectSyntax = false;
+
+			if (m_bCorrectSyntax)
 			{
-				PRIORITY prio = PRIORITY::ONE;
-
-				if (m_input[i] == _T('+') || m_input[i] == _T('-'))
-					prio = PRIORITY::THREE;
-				else
-					prio = PRIORITY::TWO;
-
-				_tstring oper = _T("");
-				if(m_input[i] == _T('+'))
-					oper = _T("+");
-				else if(m_input[i] == _T('-'))
-					oper = _T("-");
-				else if (m_input[i] == _T('*'))
-					oper = _T("*");
-				else if (m_input[i] == _T('/'))
-					oper = _T("/");
-
-				CItems item(0, oper, prio);
+				i--;
+				long double ldNum = stold(sTemp);
+				CItems item(ldNum, _T(""), PRIORITY::ONE);
 
 				m_infix.push_back(item);
 			}
 		}
-		if(m_bCorrectSyntax)
-			ConvertInfixToPostFix();
+		else if (IsOperator(m_input[i]))
+		{
+			PRIORITY prio = PRIORITY::ONE;
+
+			if (m_input[i] == _T('+') || m_input[i] == _T('-'))
+				prio = PRIORITY::THREE;
+			else
+				prio = PRIORITY::TWO;
+
+			_tstring oper = _T("");
+			if(m_input[i] == _T('+'))
+				oper = _T("+");
+			else if(m_input[i] == _T('-'))
+				oper = _T("-");
+			else if (m_input[i] == _T('*'))
+				oper = _T("*");
+			else if (m_input[i] == _T('/'))
+				oper = _T("/");
+
+			CItems item(0, oper, prio);
+
+			m_infix.push_back(item);
+		}
 	}
-	else
-	{
-		m_bCorrectSyntax = false;
-	}
+	if(m_bCorrectSyntax)
+		ConvertInfixToPostFix();
+
 	return;
 }
 
@@ -312,4 +325,19 @@ void CCalculator::ConvertInfixToPostFix()
 		}
 	}
 
+}
+
+bool CCalculator::IsAlphaNumBrace(_tstring s)
+{
+	size_t nLen = s.length();
+	bool bFlag = true;
+	for (size_t i = 0 ; i < nLen; i++)
+	{
+		if (!(IsOperator(s[i]) || _istxdigit(s[i]) || s[i] == _T('(') || s[i] == _T(')') || s[i] == _T('.')))
+		{
+			bFlag = false;
+			break;
+		}
+	}
+	return bFlag;
 }
