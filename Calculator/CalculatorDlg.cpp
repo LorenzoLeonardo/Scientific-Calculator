@@ -69,6 +69,24 @@ BEGIN_MESSAGE_MAP(CCalculatorDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_ANS, &CCalculatorDlg::OnBnClickedButtonAns)
+	ON_EN_CHANGE(IDC_EDIT_INPUT, &CCalculatorDlg::OnEnChangeEditInput)
+	ON_BN_CLICKED(IDC_BUTTON_CLEAR, &CCalculatorDlg::OnBnClickedButtonClear)
+	ON_BN_CLICKED(IDC_BUTTON_0, &CCalculatorDlg::OnBnClickedButton0)
+	ON_BN_CLICKED(IDC_BUTTON_1, &CCalculatorDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON_2, &CCalculatorDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON_3, &CCalculatorDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON_4, &CCalculatorDlg::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON_5, &CCalculatorDlg::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON_6, &CCalculatorDlg::OnBnClickedButton6)
+	ON_BN_CLICKED(IDC_BUTTON_7, &CCalculatorDlg::OnBnClickedButton7)
+	ON_BN_CLICKED(IDC_BUTTON_8, &CCalculatorDlg::OnBnClickedButton8)
+	ON_BN_CLICKED(IDC_BUTTON_9, &CCalculatorDlg::OnBnClickedButton9)
+	ON_BN_CLICKED(IDC_BUTTON_PLUS, &CCalculatorDlg::OnBnClickedButtonPlus)
+	ON_BN_CLICKED(IDC_BUTTON_MINUS, &CCalculatorDlg::OnBnClickedButtonMinus)
+	ON_BN_CLICKED(IDC_BUTTON_MULTIPLY, &CCalculatorDlg::OnBnClickedButtonMultiply)
+	ON_BN_CLICKED(IDC_BUTTON_DIVIDE, &CCalculatorDlg::OnBnClickedButtonDivide)
+	ON_BN_CLICKED(IDC_BUTTON_OPENBRACE, &CCalculatorDlg::OnBnClickedButtonOpenbrace)
+	ON_BN_CLICKED(IDC_BUTTON_CLOSEBRACE, &CCalculatorDlg::OnBnClickedButtonClosebrace)
 END_MESSAGE_MAP()
 
 
@@ -189,4 +207,183 @@ void CCalculatorDlg::OnBnClickedButtonAns()
 	}
 	else
 		m_ctrlEditOutput.SetWindowText(_T("Invalid Input"));
+}
+
+
+void CCalculatorDlg::OnEnChangeEditInput()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialogEx::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
+}
+
+
+void CCalculatorDlg::OnBnClickedButtonClear()
+{
+	// TODO: Add your control notification handler code here
+	m_ctrlEditInput.SetWindowText(_T("0"));
+	m_ctrlEditOutput.SetWindowText(_T(""));
+}
+
+
+void CCalculatorDlg::OnBnClickedButton0()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("0");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButton1()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("1");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButton2()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("2");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButton3()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("3");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButton4()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("4");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButton5()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("5");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButton6()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("6");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButton7()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("7");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButton8()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("8");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButton9()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("9");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButtonPlus()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("+");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButtonMinus()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("-");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButtonMultiply()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("*");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButtonDivide()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("/");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButtonOpenbrace()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T("(");
+	m_ctrlEditInput.SetWindowText(cs);
+}
+
+
+void CCalculatorDlg::OnBnClickedButtonClosebrace()
+{
+	// TODO: Add your control notification handler code here
+	CString cs;
+	m_ctrlEditInput.GetWindowText(cs);
+	cs += _T(")");
+	m_ctrlEditInput.SetWindowText(cs);
 }
