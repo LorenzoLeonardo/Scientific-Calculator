@@ -1,56 +1,7 @@
 #include "pch.h"
 #include "CCalculator.h"
 
-CItems::CItems()
-{
-	m_number = 0;
-	m_soperation = _T("");
-	m_priority = PRIORITY::ZERO;
-	m_isOperator = false;
-	m_bIsDigit = false;
 
-}
-
-CItems::CItems(long double num, _tstring oper, PRIORITY prio)
-{
-	m_number = num;
-	m_soperation = oper;
-	m_priority = prio;
-	m_isOperator = IsOperator(oper);
-	m_bIsOpenBrace = false;
-	m_bIsCloseBrace = false;
-	m_bIsDigit = false;
-
-	if(oper.compare(_T("(")) == 0)
-		m_bIsOpenBrace = true;
-	else if (oper.compare(_T(")")) == 0)
-		m_bIsCloseBrace = true;
-	
-	if (!m_isOperator && !m_bIsOpenBrace && !m_bIsCloseBrace)
-		m_bIsDigit = true;
-}
-CItems::~CItems()
-{
-
-}
-bool CItems::IsOperator(_tstring s)
-{
-	if (s.compare(_T("+")) == 0 ||
-		s.compare(_T("-")) == 0 ||
-		s.compare(_T("*")) == 0 ||
-		s.compare(_T("/")) == 0)
-				return true;
-	else
-				return false;
-}
-bool CItems::IsBrace(_tstring s)
-{
-	if (s.compare(_T("(")) == 0 ||
-		s.compare(_T(")")) == 0)
-		return true;
-	else
-		return false;
-}
 CCalculator::CCalculator()
 {
 	m_input = _T("");
@@ -104,7 +55,10 @@ long double CCalculator::Compute()
 			{
 				m_postfix[index - 2] = m_postfix[index - 2] / m_postfix[index - 1];
 			}
-
+			else if (m_postfix[index].GetOperation().compare(_T("^")) == 0)
+			{
+				m_postfix[index - 2] = m_postfix[index - 2] ^ m_postfix[index - 1];
+			}
 			m_postfix.erase(m_postfix.begin() + index);
 			m_postfix.erase(m_postfix.begin() + index-1);
 			index-=2;
@@ -190,7 +144,8 @@ bool CCalculator::IsOperator(TCHAR s)
 	if (s == _T('+') ||
 		s == _T('-') ||
 		s == _T('/') ||
-		s == _T('*'))
+		s == _T('*') ||
+		s == _T('^'))
 		return true;
 	else
 		return false;
