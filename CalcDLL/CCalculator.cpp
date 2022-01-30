@@ -72,7 +72,40 @@ bool CCalculator::IsSyntaxCorrect()
 long double CCalculator::Compute()
 {
 
-	return 0;
+	size_t nLen = m_postfix.size();
+	size_t index = 0;
+
+	while (m_postfix.size() > 1)
+	{
+		if (m_postfix[index].IsAnOperator())
+		{
+			if (m_postfix[index].GetOperation().compare(_T("+")) == 0)
+			{
+				m_postfix[index - 2]= m_postfix[index - 2] + m_postfix[index - 1];
+			}
+			else if (m_postfix[index].GetOperation().compare(_T("-")) == 0)
+			{
+				m_postfix[index - 2] = m_postfix[index - 2] - m_postfix[index - 1];
+			}
+			else if (m_postfix[index].GetOperation().compare(_T("*")) == 0)
+			{
+				m_postfix[index - 2] = m_postfix[index - 2] * m_postfix[index - 1];
+			}
+			else if (m_postfix[index].GetOperation().compare(_T("/")) == 0)
+			{
+				m_postfix[index - 2] = m_postfix[index - 2] / m_postfix[index - 1];
+			}
+
+			m_postfix.erase(m_postfix.begin() + index);
+			m_postfix.erase(m_postfix.begin() + index-1);
+			index-=2;
+		}
+		else
+		{
+			index++;
+		}
+	}
+	return m_postfix[0].GetNumber();
 }
 
 void CCalculator::RemoveSpaces()
@@ -151,6 +184,11 @@ bool CCalculator::IsOperator(TCHAR s)
 void CCalculator::ParseInput()
 {
 	RemoveSpaces();
+
+	
+	while(m_input.find(_T(")(")) != _tstring::npos)
+		m_input.insert(m_input.find(_T(")("))+1, _T("*"));
+
 	m_input = _T("(") + m_input + _T(")");
 
 	m_bCorrectSyntax = IsBalanced(m_input);
@@ -160,19 +198,19 @@ void CCalculator::ParseInput()
 	if (!m_input.empty())
 	{
 		size_t nLen = m_input.size();
-		for (size_t i = 0; i < nLen; i++)
+		for (size_t i = 0; i < nLen && m_bCorrectSyntax; i++)
 		{
 			if (m_input[i] == _T('('))
 			{
 				CItems item(0, _T("("), PRIORITY::ONE);
 
-				m_itemsArray.push_back(item);
+				m_infix.push_back(item);
 			}
 			else if (m_input[i] == _T(')'))
 			{
 				CItems item(0, _T(")"), PRIORITY::ONE);
 
-				m_itemsArray.push_back(item);
+				m_infix.push_back(item);
 			}
 			else if (_istxdigit(m_input[i]))
 			{
@@ -192,11 +230,14 @@ void CCalculator::ParseInput()
 					sTemp += m_input[i];
 					i++;
 				}
-				i--;
-				long double ldNum = stold(sTemp);
-				CItems item(ldNum, _T(""), PRIORITY::ONE);
+				if (m_bCorrectSyntax)
+				{
+					i--;
+					long double ldNum = stold(sTemp);
+					CItems item(ldNum, _T(""), PRIORITY::ONE);
 
-				m_itemsArray.push_back(item);
+					m_infix.push_back(item);
+				}
 			}
 			else if (IsOperator(m_input[i]))
 			{
@@ -219,11 +260,11 @@ void CCalculator::ParseInput()
 
 				CItems item(0, oper, prio);
 
-				m_itemsArray.push_back(item);
+				m_infix.push_back(item);
 			}
 		}
-		m_bCorrectSyntax = true;
-		ConvertInfixToPostFix();
+		if(m_bCorrectSyntax)
+			ConvertInfixToPostFix();
 	}
 	else
 	{
@@ -234,15 +275,15 @@ void CCalculator::ParseInput()
 
 void CCalculator::ConvertInfixToPostFix()
 {
-	size_t nSize = m_itemsArray.size();
+	size_t nSize = m_infix.size();
 
 	for (size_t i = 0; i < nSize; i++)
 	{
-		if (m_itemsArray[i].IsOpenBrace())
+		if (m_infix[i].IsOpenBrace())
 		{
-			m_stack.push(m_itemsArray[i]);
+			m_stack.push(m_infix[i]);
 		}
-		else if (m_itemsArray[i].IsCloseBrace())
+		else if (m_infix[i].IsCloseBrace())
 		{
 			CItems item;
 			while (!m_stack.empty() && !m_stack.top().IsOpenBrace())
@@ -254,22 +295,21 @@ void CCalculator::ConvertInfixToPostFix()
 			if(!m_stack.empty())
 				m_stack.pop();
 		}
-		else if (m_itemsArray[i].IsADigit())
+		else if (m_infix[i].IsADigit())
 		{
-			m_postfix.push_back(m_itemsArray[i]);
+			m_postfix.push_back(m_infix[i]);
 		}
-		else if (m_itemsArray[i].IsAnOperator())
+		else if (m_infix[i].IsAnOperator())
 		{
 			CItems item;
-			while (m_stack.top().IsAnOperator() && (m_stack.top().GetPriority() <= m_itemsArray[i].GetPriority()))
+			//one as the highest priority
+			while (m_stack.top().IsAnOperator() && (m_stack.top().GetPriority() <= m_infix[i].GetPriority()))
 			{
 				m_postfix.push_back(m_stack.top());
 				m_stack.pop();
-				//m_stack.push(m_itemsArray[i]);
 			}
-			m_stack.push(m_itemsArray[i]);
+			m_stack.push(m_infix[i]);
 		}
 	}
-
 
 }

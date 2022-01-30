@@ -14,6 +14,7 @@ using namespace std;
 #define _tstring string 
 #endif
 
+//Highest Priorty is Zero
 typedef enum
 {
 	ZERO,
@@ -42,6 +43,10 @@ public:
 	void SetPriority(PRIORITY prio)
 	{
 		m_priority = prio;
+	}
+	long double GetNumber()
+	{
+		return m_number;
 	}
 	PRIORITY GetPriority()
 	{
@@ -77,7 +82,7 @@ public:
 
 	CItems operator=(const CItems& b)
 	{
-		this->m_number = this->m_number + b.m_number;
+		this->m_number = b.m_number;
 		this->m_soperation = b.m_soperation;
 		this->m_priority = b.m_priority;
 		this->m_isOperator = b.m_isOperator;
@@ -133,7 +138,7 @@ class CCalculator
 private:
 	stack<CItems> m_stack;
 	vector<CItems> m_postfix;
-	vector<CItems> m_itemsArray;
+	vector<CItems> m_infix;
 
 	_tstring m_input;
 	bool m_bCorrectSyntax;
