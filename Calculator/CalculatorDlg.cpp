@@ -185,6 +185,22 @@ HCURSOR CCalculatorDlg::OnQueryDragIcon()
 }
 
 
+CString CCalculatorDlg::InsertComma(CString c)
+{
+	
+	CString csNew;
+
+	csNew = c.Mid(0, c.Find(_T(".")));
+	int nLen = csNew.GetLength();
+	int nLoop = nLen / 3;
+
+	for (int i = 1; i <= nLoop; i++)
+	{
+		csNew.Insert(nLen - (3*i), _T(","));
+	}
+
+	return csNew + c.Mid(c.Find(_T(".")), c.GetLength());
+}
 
 void CCalculatorDlg::OnBnClickedButtonAns()
 {
@@ -198,12 +214,10 @@ void CCalculatorDlg::OnBnClickedButtonAns()
 	{
 		answer = fnpCompute();
 #ifdef _UNICODE
-		m_ctrlEditOutput.SetWindowText(to_wstring(answer).c_str());
+		m_ctrlEditOutput.SetWindowText(InsertComma(to_wstring(answer).c_str()));
 #else
-		m_ctrlEditOutput.SetWindowText(to_string(answer).c_str());
+		m_ctrlEditOutput.SetWindowText(InsertComma(to_string(answer).c_str()));
 #endif
-	
-		
 	}
 	else
 		m_ctrlEditOutput.SetWindowText(_T("Invalid Input"));

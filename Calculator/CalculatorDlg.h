@@ -40,6 +40,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 	HMODULE dll_handle;
+	CString InsertComma(CString c);
 private:
 	CEdit m_ctrlEditInput;
 	CEdit m_ctrlEditOutput;
