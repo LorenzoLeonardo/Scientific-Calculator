@@ -1,3 +1,13 @@
+/**CItems.cpp
+*Created By: Lorenzo Leonardo
+*Email : enzotechcomputersolutions@gmail.com
+*Date : January 30, 2022
+*
+* CItems Class
+*   - It is an encapsulation technique to determine if this particular object is an operator, a number or a brace
+*   - It was created to have storage of each items after parsing the input string of the calculator.
+*
+*/
 #include "pch.h"
 #include "CItems.h"
 

@@ -1,3 +1,11 @@
+/**CCalculator.h
+*Created By: Lorenzo Leonardo
+*Date : January 30, 2022
+*
+* CCalculator Class
+*   - This is where the parsing and processing of input data
+*
+*/
 #include "pch.h"
 #include "CCalculator.h"
 
@@ -70,18 +78,20 @@ long double CCalculator::Compute()
 	}
 	return m_postfix[0].GetNumber();
 }
-
+//removed all whitespaces
 inline _tstring CCalculator::RemoveSpaces(_tstring sMain)
 {
 	sMain.erase(std::remove(sMain.begin(), sMain.end(), _T(' ')), sMain.end());
 	return sMain;
 }
+//insert a character middle of a substring
 inline _tstring CCalculator::InsertWithin(_tstring sMain, _tstring substring, _tstring c)
 {
 	while (sMain.find(substring) != _tstring::npos)
 		sMain.insert(sMain.find(substring) + 1, c);
 	return sMain;
 }
+//Braces checking if it is balance
 bool CCalculator::IsBalanced(_tstring s)
 {
 	_tstring sStack;
@@ -139,6 +149,7 @@ bool CCalculator::IsBalanced(_tstring s)
 	else
 		return false;
 };
+//If it is an operator
 bool CCalculator::IsOperator(TCHAR s)
 {
 	if (s == _T('+') ||
@@ -150,22 +161,19 @@ bool CCalculator::IsOperator(TCHAR s)
 	else
 		return false;
 }
-
+//Insert items a the start and the end of the string
 inline _tstring CCalculator::InsertBothEnd(_tstring sMain, _tstring cBegin, _tstring cEnd)
 {
 	return cBegin + sMain + cEnd;
 }
+//converting single char to string
 _tstring CCalculator::ToString(TCHAR x)
 {
-	// string class has a constructor
-	// that allows us to specify size of
-	// string as first parameter and character
-	// to be filled in given size as second
-	// parameter.
 	_tstring s(1, x);
 
 	return s;
 }
+//Parsing of the input string
 void CCalculator::ParseInput()
 {
 	m_bCorrectSyntax = false;
@@ -174,6 +182,7 @@ void CCalculator::ParseInput()
 		return;
 
 	m_input= RemoveSpaces(m_input);
+	//insert * in between braces and number and braces to easy parsing later
 	m_input = InsertWithin(m_input,_T(")("), _T("*"));
 	for (int i = 0; i < 10; i++)
 	{
@@ -186,6 +195,7 @@ void CCalculator::ParseInput()
 	m_bCorrectSyntax = IsBalanced(m_input);
 	if (!m_bCorrectSyntax)
 		return;
+	//only accept operators, numbers and Braces
 	m_bCorrectSyntax = IsAlphaNumBrace(m_input);
 	if (!m_bCorrectSyntax)
 		return;
@@ -250,6 +260,7 @@ void CCalculator::ParseInput()
 
 	return;
 }
+//Used to get the priorty of the operator
 inline PRIORITY CCalculator::GetPriorityNumber(TCHAR c)
 {
 	if (c == _T('^'))
@@ -261,6 +272,7 @@ inline PRIORITY CCalculator::GetPriorityNumber(TCHAR c)
 	else
 		return PRIORITY::FIVE;
 }
+//Main fucniton in converting infix notation to postfix
 void CCalculator::ConvertInfixToPostFix()
 {
 	size_t nSize = m_infix.size();
@@ -301,7 +313,7 @@ void CCalculator::ConvertInfixToPostFix()
 	}
 
 }
-
+//Only the allowed character inputs
 bool CCalculator::IsAlphaNumBrace(_tstring s)
 {
 	size_t nLen = s.length();

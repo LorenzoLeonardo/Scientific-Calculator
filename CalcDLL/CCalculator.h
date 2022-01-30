@@ -1,5 +1,12 @@
 #pragma once
-
+/**CCalculator.h
+*Created By: Lorenzo Leonardo
+*Date : January 30, 2022
+*
+* CCalculator Class
+*   - This is where the parsing and processing of input data
+*
+*/
 #include <stack>
 #include <string>
 #include <tchar.h>
@@ -14,7 +21,6 @@ private:
 	stack<CItems> m_stack;
 	vector<CItems> m_postfix;
 	vector<CItems> m_infix;
-
 	_tstring m_input;
 	bool m_bCorrectSyntax;
 	
@@ -28,7 +34,6 @@ private:
 	bool IsAlphaNumBrace(_tstring s);
 	void ConvertInfixToPostFix();
 	_tstring ToString(TCHAR x);
-
 	
 public:
 	CCalculator();
