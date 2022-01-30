@@ -8,10 +8,12 @@ using namespace std;
 
 
 #ifdef _UNICODE
-#define _tstring wstring 
+#define _tstring	wstring 
+#define	to_tstring	to_wstring
 
 #else
 #define _tstring string 
+#define	to_tstring	to_string
 #endif
 
 //Highest Priorty is Zero
@@ -91,27 +93,39 @@ public:
 		this->m_bIsCloseBrace = b.m_bIsCloseBrace;
 		return *this;
 	}
-
+	CItems operator+=(const CItems& b)
+	{
+		this->m_number = this->m_number + b.m_number;
+		return *this;
+	}
+	CItems operator-=(const CItems& b)
+	{
+		this->m_number = this->m_number - b.m_number;
+		return *this;
+	}
+	CItems operator*=(const CItems& b)
+	{
+		this->m_number = this->m_number * b.m_number;
+		return *this;
+	}
+	CItems operator/=(const CItems& b)
+	{
+		this->m_number = this->m_number / b.m_number;
+		return *this;
+	}
 	CItems operator+(const CItems& b)
 	{
 		CItems ans;
 
 		ans.m_number = this->m_number + b.m_number;
-		ans.m_priority = PRIORITY::ZERO;
 		return ans;
 	}
-	CItems operator+=(const CItems& b)
-	{
-		this->m_number = this->m_number + b.m_number;
-		this->m_priority = PRIORITY::ZERO;
-		return *this;
-	}
+
 	CItems operator-(const CItems& b)
 	{
 		CItems ans;
 
 		ans.m_number = this->m_number - b.m_number;
-		ans.m_priority = PRIORITY::ZERO;
 		return ans;
 	}
 	CItems operator*(const CItems& b)
@@ -119,7 +133,6 @@ public:
 		CItems ans;
 
 		ans.m_number = this->m_number * b.m_number;
-		ans.m_priority = PRIORITY::ZERO;
 		return ans;
 	}
 	CItems operator/(const CItems& b)
@@ -127,7 +140,6 @@ public:
 		CItems ans;
 
 		ans.m_number = this->m_number / b.m_number;
-		ans.m_priority = PRIORITY::ZERO;
 		return ans;
 	}
 };
@@ -142,28 +154,24 @@ private:
 
 	_tstring m_input;
 	bool m_bCorrectSyntax;
-	void ParseInput();
+	
 	inline _tstring RemoveSpaces(_tstring sMain);
 	inline _tstring InsertWithin(_tstring sMain, _tstring substring, _tstring c);
 	inline _tstring InsertBothEnd(_tstring sMain, _tstring c, _tstring d);
+	inline PRIORITY GetPriorityNumber(TCHAR c);
+	void ParseInput();
 	bool IsBalanced(_tstring s);
 	bool IsOperator(TCHAR s);
 	bool IsAlphaNumBrace(_tstring s);
 	void ConvertInfixToPostFix();
+	_tstring ToString(TCHAR x);
+
+	
 public:
 	CCalculator();
 	CCalculator(CONST TCHAR *input);
 	bool IsSyntaxCorrect();
 	long double Compute();
-	void SetInput(CONST TCHAR* input)
-	{
-		while (!m_stack.empty())
-			m_stack.pop();
-		m_postfix.clear();
-		m_infix.clear();
-		m_input = input;
-		ParseInput();
-	}
-
+	void SetInput(CONST TCHAR* input);
 };
 

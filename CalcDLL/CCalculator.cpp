@@ -63,6 +63,15 @@ CCalculator::CCalculator(const TCHAR *input)
 	m_bCorrectSyntax = true;
 
 }
+void CCalculator::SetInput(CONST TCHAR* input)
+{
+	while (!m_stack.empty())
+		m_stack.pop();
+	m_postfix.clear();
+	m_infix.clear();
+	m_input = input;
+	ParseInput();
+}
 bool CCalculator::IsSyntaxCorrect()
 {
 
@@ -191,6 +200,17 @@ inline _tstring CCalculator::InsertBothEnd(_tstring sMain, _tstring cBegin, _tst
 {
 	return cBegin + sMain + cEnd;
 }
+_tstring CCalculator::ToString(TCHAR x)
+{
+	// string class has a constructor
+	// that allows us to specify size of
+	// string as first parameter and character
+	// to be filled in given size as second
+	// parameter.
+	_tstring s(1, x);
+
+	return s;
+}
 void CCalculator::ParseInput()
 {
 	m_bCorrectSyntax = false;
@@ -258,24 +278,7 @@ void CCalculator::ParseInput()
 		}
 		else if (IsOperator(m_input[i]))
 		{
-			PRIORITY prio = PRIORITY::ONE;
-
-			if (m_input[i] == _T('+') || m_input[i] == _T('-'))
-				prio = PRIORITY::THREE;
-			else
-				prio = PRIORITY::TWO;
-
-			_tstring oper = _T("");
-			if(m_input[i] == _T('+'))
-				oper = _T("+");
-			else if(m_input[i] == _T('-'))
-				oper = _T("-");
-			else if (m_input[i] == _T('*'))
-				oper = _T("*");
-			else if (m_input[i] == _T('/'))
-				oper = _T("/");
-
-			CItems item(0, oper, prio);
+			CItems item(0, ToString(m_input[i]), GetPriorityNumber(m_input[i]));
 
 			m_infix.push_back(item);
 		}
@@ -285,7 +288,17 @@ void CCalculator::ParseInput()
 
 	return;
 }
-
+inline PRIORITY CCalculator::GetPriorityNumber(TCHAR c)
+{
+	if (c == _T('^'))
+		return PRIORITY::TWO;
+	else if (c == _T('*') || c == _T('/'))
+		return PRIORITY::THREE;
+	else if (c == _T('+') || c == _T('-'))
+		return PRIORITY::FOUR;
+	else
+		return PRIORITY::FIVE;
+}
 void CCalculator::ConvertInfixToPostFix()
 {
 	size_t nSize = m_infix.size();
