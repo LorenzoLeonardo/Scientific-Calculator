@@ -175,6 +175,13 @@ void CCalculator::ParseInput()
 
 	m_input= RemoveSpaces(m_input);
 	m_input = InsertWithin(m_input,_T(")("), _T("*"));
+	for (int i = 0; i < 10; i++)
+	{
+		_tstring sNum(1, i+48);
+
+		m_input = InsertWithin(m_input, sNum+_T("("), _T("*"));
+		m_input = InsertWithin(m_input,  _T(")")+ sNum, _T("*"));
+	}
 	m_input = InsertBothEnd(m_input, _T("("), _T(")"));
 	m_bCorrectSyntax = IsBalanced(m_input);
 	if (!m_bCorrectSyntax)
